@@ -17,12 +17,12 @@ namespace Project.Service
                 return;   // DB has been seeded
             }
 
-            var vehicleMake = new VehicleMake[]
+            var vehicleMakes = new VehicleMake[]
             {
                 new VehicleMake{Name="Audi",Abrv=""},
                 new VehicleMake{Name="BMW",Abrv=""}
             };
-            foreach (VehicleMake vm in vehicleMake)
+            foreach (VehicleMake vm in vehicleMakes)
             {
                 context.VehicleMakes.Add(vm);
             }
@@ -30,10 +30,10 @@ namespace Project.Service
 
             var vehicleModels = new VehicleModel[]
             {
-                new VehicleModel{MakeId=1,Name="A1",Abrv=""},
-                new VehicleModel{MakeId=1,Name="S3",Abrv=""},
-                new VehicleModel{MakeId=2,Name="X5",Abrv=""},
-                new VehicleModel{MakeId=2,Name="X7",Abrv=""}
+                new VehicleModel{VehicleMakeId=1,Name="A1",Abrv=""},
+                new VehicleModel{VehicleMakeId=1,Name="S3",Abrv=""},
+                new VehicleModel{VehicleMakeId=2,Name="X5",Abrv=""},
+                new VehicleModel{VehicleMakeId=2,Name="X7",Abrv=""}
             };
             foreach (VehicleModel c in vehicleModels)
             {

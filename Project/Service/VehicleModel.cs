@@ -5,7 +5,7 @@ namespace Project.Service
     public class VehicleModel
     {
         public int Id { get; set; }
-        public int MakeId { get; set; }
+        public int VehicleMakeId { get; set; }
 
         [Required(ErrorMessage = "Please enter the valid name")]
         public string Name { get; set; }
