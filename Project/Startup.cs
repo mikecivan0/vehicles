@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Project.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +27,11 @@ namespace Project
         public void ConfigureServices(IServiceCollection services)
 
         {
+            services.AddDbContext<VehicleService>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
             services.Configure<RazorViewEngineOptions>(o =>
             {
                 // {1} is controller,{0} is the action    
@@ -32,6 +39,8 @@ namespace Project
                 o.ViewLocationFormats.Add("/MVC/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
                 o.ViewLocationFormats.Add("/MVC/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
             });
+
+            services.AddRazorPages().WithRazorPagesRoot("/MVC/Views");
 
             services.AddControllersWithViews();
         }
