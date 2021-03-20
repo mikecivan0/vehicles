@@ -68,7 +68,6 @@ C:\Users\Ivan\source\repos\Project\Project\obj\Debug\net5.0\Razor\MVC\Views\Shar
 C:\Users\Ivan\source\repos\Project\Project\obj\Debug\net5.0\Razor\MVC\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
 C:\Users\Ivan\source\repos\Project\Project\obj\Debug\net5.0\Razor\MVC\Views\_ViewImports.cshtml.g.cs
 C:\Users\Ivan\source\repos\Project\Project\obj\Debug\net5.0\Razor\MVC\Views\_ViewStart.cshtml.g.cs
-C:\Users\Ivan\source\repos\Project\Project\obj\Debug\net5.0\Project.csprojAssemblyReference.cache
 C:\Users\Ivan\source\repos\Project\Project\bin\Debug\net5.0\Humanizer.dll
 C:\Users\Ivan\source\repos\Project\Project\bin\Debug\net5.0\Microsoft.AspNetCore.Razor.Language.dll
 C:\Users\Ivan\source\repos\Project\Project\bin\Debug\net5.0\Microsoft.Bcl.AsyncInterfaces.dll
@@ -155,3 +154,4 @@ C:\Users\Ivan\source\repos\Project\Project\obj\Debug\net5.0\Razor\MVC\Views\Vehi
 C:\Users\Ivan\source\repos\Project\Project\obj\Debug\net5.0\Razor\MVC\Views\VehicleModels\Details.cshtml.g.cs
 C:\Users\Ivan\source\repos\Project\Project\obj\Debug\net5.0\Razor\MVC\Views\VehicleModels\Edit.cshtml.g.cs
 C:\Users\Ivan\source\repos\Project\Project\obj\Debug\net5.0\Razor\MVC\Views\VehicleModels\Index.cshtml.g.cs
+C:\Users\Ivan\source\repos\Project\Project\obj\Debug\net5.0\Project.csprojAssemblyReference.cache

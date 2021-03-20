@@ -56,13 +56,23 @@ namespace Project.MVC
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,VehicleMakeId,Name,Abrv")] VehicleModel vehicleModel)
+        public async Task<IActionResult> Create([Bind("VehicleMakeId,Name,Abrv")] VehicleModel vehicleModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(vehicleModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(vehicleModel);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
             }
             ViewData["VehicleMakeId"] = new SelectList(_context.VehicleMakes, "Id", "Name", vehicleModel.VehicleMakeId);
             return View(vehicleModel);
@@ -88,41 +98,39 @@ namespace Project.MVC
         // POST: VehicleModels/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,VehicleMakeId,Name,Abrv")] VehicleModel vehicleModel)
+        public async Task<IActionResult> EditPost(int? id)
         {
-            if (id != vehicleModel.Id)
+            if (id == null)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            var vehicleModelToUpdate = await _context.VehicleModels.FirstOrDefaultAsync(s => s.Id == id);
+            if (await TryUpdateModelAsync<VehicleModel>(
+                vehicleModelToUpdate,
+                "",
+                s => s.Name, s => s.Abrv, s => s.VehicleMakeId))
             {
                 try
                 {
-                    _context.Update(vehicleModel);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /* ex */)
                 {
-                    if (!VehicleModelExists(vehicleModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["VehicleMakeId"] = new SelectList(_context.VehicleMakes, "Id", "Name", vehicleModel.VehicleMakeId);
-            return View(vehicleModel);
+            ViewData["VehicleMakeId"] = new SelectList(_context.VehicleMakes, "Id", "Name", vehicleModelToUpdate.VehicleMakeId);
+            return View(vehicleModelToUpdate);
         }
 
         // GET: VehicleModels/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
@@ -131,10 +139,18 @@ namespace Project.MVC
 
             var vehicleModel = await _context.VehicleModels
                 .Include(v => v.VehicleMake)
+                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicleModel == null)
             {
                 return NotFound();
+            }
+
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewData["ErrorMessage"] =
+                    "Delete failed. Try again, and if the problem persists " +
+                    "see your system administrator.";
             }
 
             return View(vehicleModel);
@@ -146,9 +162,22 @@ namespace Project.MVC
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var vehicleModel = await _context.VehicleModels.FindAsync(id);
-            _context.VehicleModels.Remove(vehicleModel);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (vehicleModel == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                _context.VehicleModels.Remove(vehicleModel);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+            }
         }
 
         private bool VehicleModelExists(int id)

@@ -7,14 +7,14 @@
 
 <h1>Create</h1>
 
-<h4>VehicleModel</h4>
+<h4>Vehicle Model</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="VehicleMakeId" class="control-label"></label>
+                <label asp-for="VehicleMakeId" class="control-label">Vehicle Make</label>
                 <select asp-for="VehicleMakeId" class ="form-control" asp-items="ViewBag.VehicleMakeId"></select>
             </div>
             <div class="form-group">
