@@ -19,10 +19,55 @@ namespace Project.MVC
         }
 
         // GET: VehicleModels
-        public async Task<IActionResult> Index()
+
+        public async Task<IActionResult> Index(
+        string sortOrder,
+        string currentFilter,
+        string searchString,
+        int? pageNumber)
         {
-            var vehicleService = _context.VehicleModels.Include(v => v.VehicleMake);
-            return View(await vehicleService.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["MakeSortParm"] = sortOrder ==  "Make" ? "make_desc" : "Make";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var vehicleModels = from v in _context.VehicleModels.Include(v => v.VehicleMake)
+                                select v;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                vehicleModels = vehicleModels.Where(v => v.Name.Contains(searchString)
+                                                 || v.VehicleMake.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    vehicleModels = vehicleModels.OrderByDescending(v => v.Name);
+                    break;
+                case "Make":
+                    vehicleModels = vehicleModels.OrderBy(v => v.VehicleMake.Name);
+                    break;
+                case "make_desc":
+                    vehicleModels = vehicleModels.OrderByDescending(v => v.VehicleMake.Name);
+                    break;
+                default:
+                    vehicleModels = vehicleModels.OrderBy(v => v.Name);
+                    break;
+               
+            }
+            int pageSize = 3;
+            return View(await PaginatedList<VehicleModel>.CreateAsync(vehicleModels.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: VehicleModels/Details/5

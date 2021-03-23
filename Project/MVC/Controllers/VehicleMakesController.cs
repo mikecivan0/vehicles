@@ -19,9 +19,46 @@ namespace Project.MVC
         }
 
         // GET: VehicleMakes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
-            return View(await _context.VehicleMakes.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["NameFilter"] = searchString;
+            var vehicleMakes = from vm in _context.VehicleMakes
+                           select vm;
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                vehicleMakes = vehicleMakes.Where(vm => vm.Name.Contains(searchString));
+                //vehicleModels = vehicleModels.Where(vm => vm.Name.ToUpper().Contains(searchString.ToUpper()));
+                //koristi se ako se kasnije kod promjeni da vraća IQueryable object, a ne IEmunerable collection jer je tada pretraga case sensitive
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    vehicleMakes = vehicleMakes.OrderByDescending(vm => vm.Name);
+                    break;
+                default:
+                    vehicleMakes = vehicleMakes.OrderBy(vm => vm.Name);
+                    break;
+            }
+            int pageSize = 3;
+            return View(await PaginatedList<VehicleMake>.CreateAsync(vehicleMakes.AsNoTracking(), pageNumber ?? 1, pageSize));
+
         }
 
         // GET: VehicleMakes/Details/5
