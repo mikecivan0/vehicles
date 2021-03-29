@@ -3,7 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Project.Service;
+using Project.DAL;
+using Project.Services.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,18 +18,18 @@ namespace Project
         {
             var host = CreateHostBuilder(args).Build();
 
-            CreateDbIfNotExists(host);
+            //CreateDbIfNotExists(host);
 
             host.Run();
         }
-
+/*
         private static void CreateDbIfNotExists(IHost host)
         {
             using var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
             try
             {
-                var context = services.GetRequiredService<VehicleService>();
+                var context = services.GetRequiredService<VehicleContext>();
                 DbInitializer.Initialize(context);
             }
             catch (Exception ex)
@@ -37,7 +38,7 @@ namespace Project
                 logger.LogError(ex, "An error occurred creating the DB.");
             }
         }
-
+*/
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>

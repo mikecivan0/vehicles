@@ -6,7 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Project.Service;
+using Project.Helper;
+using Project.Services.Data;
+using Project.Services.Infrastructure;
+using Project.Services.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,22 +30,21 @@ namespace Project
         public void ConfigureServices(IServiceCollection services)
 
         {
-            services.AddDbContext<VehicleService>(options =>
+            services.AddDbContext<VehicleContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.Configure<RazorViewEngineOptions>(o =>
-            {
-                // {1} is controller,{0} is the action    
-                o.ViewLocationFormats.Clear();
-                o.ViewLocationFormats.Add("/MVC/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
-                o.ViewLocationFormats.Add("/MVC/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
-            });
-
-            services.AddRazorPages().WithRazorPagesRoot("/MVC/Views");
-
             services.AddControllersWithViews();
+
+            services.AddTransient<IVehicleMake, VehicleMakeRepo>();
+            services.AddTransient<IVehicleModel, VehicleModelRepo>();
+            var config = new AutoMapper.MapperConfiguration(cfg =>
+           {
+               cfg.AddProfile(new AutomapperProfile());
+           });
+            var mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
