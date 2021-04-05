@@ -23,9 +23,9 @@ namespace Project.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var AllVehicleMakes = _vehicleMake.GetAllVehicleMakes();
+            var AllVehicleMakes = await _vehicleMake.GetAllVehicleMakesAsync();
             var mappedVehicleMakes = _mapper.Map<List<VehicleMakeViewModel>>(AllVehicleMakes);
             return View(mappedVehicleMakes);
         }
@@ -37,56 +37,56 @@ namespace Project.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var vehicleMake = _vehicleMake.GetVehicleMakeById(id);
+            var vehicleMake = await _vehicleMake.GetVehicleMakeByIdAsync(id);
             var mappedVehicleMake = _mapper.Map<EditVehicleMakeViewModel>(vehicleMake);
             return View(mappedVehicleMake);
         }
 
         [HttpGet]
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            var vehicleMake = _vehicleMake.GetVehicleMakeById(id);
+            var vehicleMake = await _vehicleMake.GetVehicleMakeByIdAsync(id);
             var mappedVehicleMake = _mapper.Map<DetailsVehicleMakeViewModel>(vehicleMake);
             return View(mappedVehicleMake);
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var vehicleMake = _vehicleMake.GetVehicleMakeById(id);
+            var vehicleMake = await _vehicleMake.GetVehicleMakeByIdAsync(id);
             var mappedVehicleMake = _mapper.Map<DeleteVehicleMakeViewModel>(vehicleMake);
             return View(mappedVehicleMake);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(DeleteVehicleMakeViewModel vm)
+        public async Task<IActionResult> Delete(DeleteVehicleMakeViewModel vm)
         {
             var mappedVehicleMakeInModel = _mapper.Map<VehicleMake>(vm);
             _vehicleMake.DeleteVehicleMake(mappedVehicleMakeInModel);
-            _vehicleMake.Save();
+            await _vehicleMake.SaveVehicleMakeAsync();
             return RedirectToAction("Index", "VehicleMake");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(EditVehicleMakeViewModel vm)
+        public async Task<IActionResult> Edit(EditVehicleMakeViewModel vm)
         {
             var mappedVehicleMakeInModel = _mapper.Map<VehicleMake>(vm);
             _vehicleMake.UpdateVehicleMake(mappedVehicleMakeInModel);
-            _vehicleMake.Save();
+            await _vehicleMake.SaveVehicleMakeAsync();
             return RedirectToAction("Index", "VehicleMake");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateVehicleMakeViewModel vm)
+        public async Task<IActionResult> Create(CreateVehicleMakeViewModel vm)
         {
             var mappedVehicleMakeInModel = _mapper.Map<VehicleMake>(vm);
-            _vehicleMake.InsertVehicleMake(mappedVehicleMakeInModel);
-            _vehicleMake.Save();
+            await _vehicleMake.InsertVehicleMakeAsync(mappedVehicleMakeInModel);
+            await _vehicleMake.SaveVehicleMakeAsync();
             return RedirectToAction("Index", "VehicleMake");
         }
 

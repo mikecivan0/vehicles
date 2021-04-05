@@ -23,24 +23,24 @@ namespace Project.Services.Repositories
             _context.VehicleModels.Remove(vehicleModel);
         }
 
-        public List<VehicleModel> GetAllVehicleModels()
+        public async Task<List<VehicleModel>> GetAllVehicleModelsAsync()
         {
-            return _context.VehicleModels.Include(v => v.VehicleMake).ToList();
+            return await _context.VehicleModels.Include(v => v.VehicleMake).ToListAsync();
         }
 
-        public VehicleModel GetVehicleModelById(int Id)
+        public async Task<VehicleModel> GetVehicleModelByIdAsync(int Id)
         {
-            return _context.VehicleModels.Include(v => v.VehicleMake).Where(y => y.Id == Id).FirstOrDefault();
+            return await _context.VehicleModels.Include(v => v.VehicleMake).Where(y => y.Id == Id).FirstOrDefaultAsync();
         }
 
-        public void InsertVehicleModel(VehicleModel vehicleModel)
+        public async Task InsertVehicleModelAsync(VehicleModel vehicleModel)
         {
-            _context.VehicleModels.Add(vehicleModel);
+            await _context.VehicleModels.AddAsync(vehicleModel);
         }
 
-        public void Save()
+        public async Task SaveVehicleModelAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public void UpdateVehicleModel(VehicleModel vehicleModel)

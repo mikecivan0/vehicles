@@ -8,11 +8,11 @@ namespace Project.Services.Infrastructure
 {
     public interface IVehicleModel
     {
-        List<VehicleModel> GetAllVehicleModels();
-        VehicleModel GetVehicleModelById(int Id);
-        void InsertVehicleModel(VehicleModel vehicleModel);
+        Task<List<VehicleModel>> GetAllVehicleModelsAsync();
+        Task <VehicleModel> GetVehicleModelByIdAsync(int Id);
+        Task InsertVehicleModelAsync(VehicleModel vehicleModel);
         void UpdateVehicleModel(VehicleModel vehicleModel);
         void DeleteVehicleModel(VehicleModel vehicleModel);
-        void Save();
+        Task SaveVehicleModelAsync();
     }
 }

@@ -27,47 +27,47 @@ namespace Project.Controllers
 
         // GET: VehicleModelController
         [HttpGet]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var AllVehicleModels = _vehicleModel.GetAllVehicleModels();
+            var AllVehicleModels = await _vehicleModel.GetAllVehicleModelsAsync();
             var mappedVehicleModels = _mapper.Map<List<VehicleModelViewModel>>(AllVehicleModels);
             return View(mappedVehicleModels);
         }
 
         // GET: VehicleModelController/Details/5
         [HttpGet]
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            var vehicleModel = _vehicleModel.GetVehicleModelById(id);
+            var vehicleModel = await _vehicleModel.GetVehicleModelByIdAsync(id);
             var mappedVehicleModel = _mapper.Map<DetailsVehicleModelViewModel>(vehicleModel);
             return View(mappedVehicleModel);
         }
 
         // GET: VehicleModelController/Create
         [HttpGet]
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            ViewData["VehicleMakeId"] = new SelectList(_vehicleMake.GetAllVehicleMakes(), "Id", "Name");            
+            ViewData["VehicleMakeId"] = new SelectList(await _vehicleMake.GetAllVehicleMakesAsync(), "Id", "Name");            
             return View();
         }
 
         // POST: VehicleModelController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(CreateVehicleModelViewModel vm)
+        public async Task<ActionResult> Create(CreateVehicleModelViewModel vm)
         {
             var mappedVehicleModelInModel = _mapper.Map<VehicleModel>(vm);
-            _vehicleModel.InsertVehicleModel(mappedVehicleModelInModel);
-            _vehicleModel.Save();
+            await _vehicleModel.InsertVehicleModelAsync(mappedVehicleModelInModel);
+            await _vehicleModel.SaveVehicleModelAsync();
             return RedirectToAction("Index", "VehicleModel");  
         }
 
         // GET: VehicleModelController/Edit/5
         [HttpGet]
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            ViewData["VehicleMakeId"] = new SelectList(_vehicleMake.GetAllVehicleMakes(), "Id", "Name");
-            var vehicleModel = _vehicleModel.GetVehicleModelById(id);
+            ViewData["VehicleMakeId"] = new SelectList(await _vehicleMake.GetAllVehicleMakesAsync(), "Id", "Name");
+            var vehicleModel = await _vehicleModel.GetVehicleModelByIdAsync(id);
             var mappedVehicleModel = _mapper.Map<EditVehicleModelViewModel>(vehicleModel);
             return View(mappedVehicleModel);
         }
@@ -75,19 +75,19 @@ namespace Project.Controllers
         // POST: VehicleModelController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(EditVehicleModelViewModel vm)
+        public async Task<ActionResult> Edit(EditVehicleModelViewModel vm)
         {
             var mappedVehicleModelInModel = _mapper.Map<VehicleModel>(vm);
             _vehicleModel.UpdateVehicleModel(mappedVehicleModelInModel);
-            _vehicleModel.Save();
+            await _vehicleModel.SaveVehicleModelAsync();
             return RedirectToAction("Index", "VehicleModel");
         }
 
         // GET: VehicleModelController/Delete/5
         [HttpGet]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var vehicleModel = _vehicleModel.GetVehicleModelById(id);
+            var vehicleModel = await _vehicleModel.GetVehicleModelByIdAsync(id);
             var mappedVehicleModel = _mapper.Map<DeleteVehicleModelViewModel>(vehicleModel);
             return View(mappedVehicleModel);
         }
@@ -95,11 +95,11 @@ namespace Project.Controllers
         // POST: VehicleModelController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(DeleteVehicleModelViewModel vm)
+        public async Task<ActionResult> Delete(DeleteVehicleModelViewModel vm)
         {
             var mappedVehicleModelInModel = _mapper.Map<VehicleModel>(vm);
             _vehicleModel.DeleteVehicleModel(mappedVehicleModelInModel);
-            _vehicleModel.Save();
+           await _vehicleModel.SaveVehicleModelAsync();
             return RedirectToAction("Index", "VehicleModel");
         }
     }
