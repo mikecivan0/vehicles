@@ -23,10 +23,19 @@ namespace Project.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SearchName, List<VehicleMake> VehicleMakes)
         {
-            var AllVehicleMakes = await _vehicleMake.GetAllVehicleMakesAsync();
-            var mappedVehicleMakes = _mapper.Map<List<VehicleMakeViewModel>>(AllVehicleMakes);
+
+            if (!String.IsNullOrEmpty(SearchName))
+            {
+                VehicleMakes = await _vehicleMake.SearchVehicleMakesAsync(SearchName);
+            }
+            else
+            {
+                VehicleMakes = await _vehicleMake.GetAllVehicleMakesAsync();
+            }
+           
+            var mappedVehicleMakes = _mapper.Map<List<VehicleMakeViewModel>>(VehicleMakes);
             return View(mappedVehicleMakes);
         }
 

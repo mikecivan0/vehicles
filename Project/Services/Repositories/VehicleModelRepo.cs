@@ -27,6 +27,12 @@ namespace Project.Services.Repositories
         {
             return await _context.VehicleModels.Include(v => v.VehicleMake).ToListAsync();
         }
+        public async Task<List<VehicleModel>> SearchVehicleModelsAsync(string SearchName)
+        {
+            return await _context.VehicleModels.Include(v => v.VehicleMake)
+                                                        .Where(x => x.Name.Contains(SearchName) || x.VehicleMake.Name.Contains(SearchName))
+                                                        .ToListAsync();
+        }
 
         public async Task<VehicleModel> GetVehicleModelByIdAsync(int Id)
         {

@@ -28,6 +28,11 @@ namespace Project.Services.Repositories
             return await _context.VehicleMakes.ToListAsync();
         }
 
+        public async Task<List<VehicleMake>> SearchVehicleMakesAsync(string SearchName)
+        {
+            return await _context.VehicleMakes.Where(x => x.Name.Contains(SearchName)).ToListAsync();
+        }
+
         public async Task<VehicleMake> GetVehicleMakeByIdAsync(int Id)
         {
             return await _context.VehicleMakes.Include(y => y.VehicleModels)

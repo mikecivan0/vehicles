@@ -27,10 +27,18 @@ namespace Project.Controllers
 
         // GET: VehicleModelController
         [HttpGet]
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string SearchName, List<VehicleModel> VehicleModels)
         {
-            var AllVehicleModels = await _vehicleModel.GetAllVehicleModelsAsync();
-            var mappedVehicleModels = _mapper.Map<List<VehicleModelViewModel>>(AllVehicleModels);
+            if (!String.IsNullOrEmpty(SearchName))
+            {
+                VehicleModels = await _vehicleModel.SearchVehicleModelsAsync(SearchName);
+            }
+            else
+            {
+                VehicleModels = await _vehicleModel.GetAllVehicleModelsAsync();
+            }
+
+            var mappedVehicleModels = _mapper.Map<List<VehicleModelViewModel>>(VehicleModels);
             return View(mappedVehicleModels);
         }
 

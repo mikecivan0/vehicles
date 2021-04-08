@@ -8,6 +8,7 @@ namespace Project.Services.Infrastructure
 {
     public interface IVehicleMake
     {
+        Task<List<VehicleMake>> SearchVehicleMakesAsync(string SearchName);
         Task<List<VehicleMake>> GetAllVehicleMakesAsync();
         Task<VehicleMake> GetVehicleMakeByIdAsync(int Id);
         Task InsertVehicleMakeAsync(VehicleMake vehicleMake);
