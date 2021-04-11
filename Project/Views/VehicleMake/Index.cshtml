@@ -9,19 +9,22 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form method="get">
-    <div class="input-group">
-        <input name="SearchName" id="SearchName" class="form-control" placeholder="Search by Name" />
-        <div class="input-group-append">
-            <button type="submit" class="btn btn-primary">Search</button>
-        </div>
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="SearchString" value="@ViewData["NameFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
     </div>
 </form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a asp-action="Index" 
+                   asp-route-sortOrder="@ViewData["NameSortParm"]" 
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Abrv)
@@ -40,11 +43,11 @@
                     @Html.DisplayFor(modelItem => item.Abrv)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
-        }
+         }
     </tbody>
 </table>

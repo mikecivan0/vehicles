@@ -28,9 +28,32 @@ namespace Project.Services.Repositories
             return await _context.VehicleMakes.ToListAsync();
         }
 
-        public async Task<List<VehicleMake>> SearchVehicleMakesAsync(string SearchName)
+        public async Task<List<VehicleMake>> GetVehicleMakesAsync(
+            string sortOrder,
+            string currentFilter,
+            string searchString)
         {
-            return await _context.VehicleMakes.Where(x => x.Name.Contains(SearchName)).ToListAsync();
+            var vehicleMakes = from vm in _context.VehicleMakes
+                               select vm;
+
+            if (searchString == null)
+            {
+                searchString = currentFilter;
+            }
+            
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                vehicleMakes = vehicleMakes.Where(vm => vm.Name.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            vehicleMakes = sortOrder switch
+            {
+                "name_desc" => vehicleMakes.OrderByDescending(vm => vm.Name),
+                "name_asc" => vehicleMakes.OrderBy(vm => vm.Name),
+                _ => vehicleMakes.OrderBy(vm => vm.Name),
+            };
+            return await vehicleMakes.AsNoTracking().ToListAsync();
         }
 
         public async Task<VehicleMake> GetVehicleMakeByIdAsync(int Id)

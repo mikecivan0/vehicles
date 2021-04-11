@@ -23,20 +23,21 @@ namespace Project.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string SearchName, List<VehicleMake> VehicleMakes)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString)
         {
+            ViewData["CurrentFilter"] = searchString; 
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) || sortOrder!="name_desc" ? "name_desc" : "name_asc"; //change param for next sorting
+            ViewData["NameFilter"] = searchString; //displaying search value in input
 
-            if (!String.IsNullOrEmpty(SearchName))
-            {
-                VehicleMakes = await _vehicleMake.SearchVehicleMakesAsync(SearchName);
-            }
-            else
-            {
-                VehicleMakes = await _vehicleMake.GetAllVehicleMakesAsync();
-            }
-           
-            var mappedVehicleMakes = _mapper.Map<List<VehicleMakeViewModel>>(VehicleMakes);
+
+            var vehicleMakes = await _vehicleMake.GetVehicleMakesAsync(sortOrder, currentFilter, searchString);           
+            var mappedVehicleMakes = _mapper.Map<List<VehicleMakeViewModel>>(vehicleMakes);
+
             return View(mappedVehicleMakes);
+
         }
 
         [HttpGet]
