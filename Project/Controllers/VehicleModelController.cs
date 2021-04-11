@@ -27,18 +27,19 @@ namespace Project.Controllers
 
         // GET: VehicleModelController
         [HttpGet]
-        public async Task<ActionResult> Index(string SearchName, List<VehicleModel> VehicleModels)
+        public async Task<ActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString)
         {
-            if (!String.IsNullOrEmpty(SearchName))
-            {
-                VehicleModels = await _vehicleModel.SearchVehicleModelsAsync(SearchName);
-            }
-            else
-            {
-                VehicleModels = await _vehicleModel.GetAllVehicleModelsAsync();
-            }
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) || sortOrder == "name_asc" ? "name_desc" : "name_asc"; //change param for next sorting
+            ViewData["MakeSortParm"] = sortOrder == "make_asc" ? "make_desc" : "make_asc";
+            ViewData["NameFilter"] = searchString; //displaying search value in input
+            
+            var vehicleModels = await _vehicleModel.GetVehicleModelsAsync(sortOrder, currentFilter, searchString);
+            var mappedVehicleModels = _mapper.Map<List<VehicleModelViewModel>>(vehicleModels);
 
-            var mappedVehicleModels = _mapper.Map<List<VehicleModelViewModel>>(VehicleModels);
             return View(mappedVehicleModels);
         }
 

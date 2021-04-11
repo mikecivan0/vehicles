@@ -8,7 +8,10 @@ namespace Project.Services.Infrastructure
 {
     public interface IVehicleModel
     {
-        Task<List<VehicleModel>> SearchVehicleModelsAsync(string SearchName);
+        Task<List<VehicleModel>> GetVehicleModelsAsync(
+            string sortOrder,
+            string currentFilter,
+            string searchString);
         Task<List<VehicleModel>> GetAllVehicleModelsAsync();
         Task <VehicleModel> GetVehicleModelByIdAsync(int Id);
         Task InsertVehicleModelAsync(VehicleModel vehicleModel);

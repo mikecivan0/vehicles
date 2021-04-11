@@ -27,11 +27,35 @@ namespace Project.Services.Repositories
         {
             return await _context.VehicleModels.Include(v => v.VehicleMake).ToListAsync();
         }
-        public async Task<List<VehicleModel>> SearchVehicleModelsAsync(string SearchName)
+        public async Task<List<VehicleModel>> GetVehicleModelsAsync(
+            string sortOrder,
+            string currentFilter,
+            string searchString)
         {
-            return await _context.VehicleModels.Include(v => v.VehicleMake)
-                                                        .Where(x => x.Name.Contains(SearchName) || x.VehicleMake.Name.Contains(SearchName))
-                                                        .ToListAsync();
+            if (searchString == null)
+            {
+                searchString = currentFilter;
+            }
+
+            var vehicleModels = from v in _context.VehicleModels.Include(v => v.VehicleMake)
+                                select v;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                vehicleModels = vehicleModels.Where(v => v.Name.ToUpper().Contains(searchString.ToUpper())
+                                                 || v.VehicleMake.Name.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            vehicleModels = sortOrder switch
+            {
+                "name_desc" => vehicleModels.OrderByDescending(v => v.Name),
+                "name_asc" => vehicleModels.OrderBy(v => v.Name),
+                "make_asc" => vehicleModels.OrderBy(v => v.VehicleMake.Name),
+                "make_desc" => vehicleModels.OrderByDescending(v => v.VehicleMake.Name),
+                _ => vehicleModels.OrderBy(v => v.Name),
+            };
+
+            return await vehicleModels.AsNoTracking().ToListAsync();
         }
 
         public async Task<VehicleModel> GetVehicleModelByIdAsync(int Id)
